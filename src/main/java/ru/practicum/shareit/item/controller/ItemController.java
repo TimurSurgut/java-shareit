@@ -19,6 +19,7 @@ public class ItemController {
 
     private final ItemService itemService;
     private final String path = "X-Sharer-User-Id";
+
     @PostMapping
     public ItemDto createItem(@RequestBody ItemDto itemDto, HttpServletRequest request) {
         log.debug("Создание вещи {}", itemDto);

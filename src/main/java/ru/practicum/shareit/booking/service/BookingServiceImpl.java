@@ -97,8 +97,8 @@ public class BookingServiceImpl implements BookingService {
         checkingUserId(userId);
         BookingDto bookingDto = toBookingDto(bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new EntityNotFoundException("Отсутствует бронирование с id: " + bookingId)));
-        if (!Objects.equals(bookingDto.getItem().getOwnerId(), userId) && !Objects.equals
-                (bookingDto.getBooker().getId(), userId)) {
+        if (!Objects.equals(bookingDto.getItem().getOwnerId(), userId) && !Objects.equals(bookingDto.getBooker().getId(),
+                userId)) {
             throw new EntityNotFoundException("Пользователь с идентификатором = " + userId + " не является владельцем!");
         }
         return bookingDto;
@@ -198,8 +198,8 @@ public class BookingServiceImpl implements BookingService {
         if (userId == -1) {
             throw new IncorrectDataException("Нет пользователя с Id : " + userId);
         }
-        return toUserDto(userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException
-                ("Нет пользователя с id: " + userId)));
+        return toUserDto(userRepository.findById(userId).orElseThrow(() ->
+                new EntityNotFoundException("Нет пользователя с id: " + userId)));
     }
 
     private void checkingBookingState(String state) {

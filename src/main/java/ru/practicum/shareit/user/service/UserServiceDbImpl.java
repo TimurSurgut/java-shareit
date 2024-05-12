@@ -2,6 +2,7 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.EmailIsAlreadyRegisteredException;
 import ru.practicum.shareit.exception.EmptyFieldException;
@@ -10,7 +11,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -30,12 +30,13 @@ public class UserServiceDbImpl implements UserService {
             throw new EmptyFieldException("Адрес электронной почты пуст");
         }
         User user;
-        try{user=userRepository.save(toUser(userDto));}
-        catch (DataIntegrityViolationException e){
-throw new EmailIsAlreadyRegisteredException("Пользователь с таким адресом электронной почты уже существует!");
+        try {
+            user = userRepository.save(toUser(userDto));
+        } catch (DataIntegrityViolationException e) {
+            throw new EmailIsAlreadyRegisteredException("Пользователь с таким адресом электронной почты уже существует!");
         }
         return toUserDto(user);
-            }
+    }
 
     @Override
     public UserDto getById(long id) {
