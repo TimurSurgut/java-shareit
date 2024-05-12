@@ -1,19 +1,19 @@
-package ru.practicum.shareit.item.dto;
+package ru.practicum.shareit.user.dto;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.request.model.ItemRequest;
+
+import javax.validation.constraints.Email;
 
 @Builder
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ItemDto {
+public class UserDto {
 
      Long id;
      String name;
-     String description;
-     Boolean available;
-     ItemRequest request;
+    @Email(message = "Incorrect email")
+     String email;
 }
