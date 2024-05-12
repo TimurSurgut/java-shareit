@@ -52,10 +52,17 @@ public class BookingServiceImpl implements BookingService {
         if (bookingDto.getStart() == null || bookingDto.getEnd() == null) {
             throw new IncorrectDataException("Бронирование: Даты недействительны!");
         }
-        if (bookingDto.getEnd().isBefore(bookingDto.getStart()) || bookingDto.getStart().isEqual(bookingDto.getEnd())
-                || bookingDto.getEnd().isBefore(LocalDateTime.now()) ||
-                bookingDto.getStart().isBefore(LocalDateTime.now())) {
-            throw new IncorrectDataException("Бронирование: Проблема с датами");
+        if (bookingDto.getEnd().isBefore(bookingDto.getStart())) {
+            throw new IncorrectDataException("Бронирование: Дата окончания бронирования раньше начала");
+        }
+        if (bookingDto.getStart().isEqual(bookingDto.getEnd())) {
+            throw new IncorrectDataException("Бронирование: Дата начала и окончания бронирования одинаковые");
+        }
+        if (bookingDto.getEnd().isBefore(LocalDateTime.now())) {
+            throw new IncorrectDataException("Бронирование: Дата окончания бронирования раньше текущей даты");
+        }
+        if (bookingDto.getStart().isBefore(LocalDateTime.now())) {
+            throw new IncorrectDataException("Бронирование: Дата начала бронирования раньше текущей даты");
         }
         bookingDto.setStatus(BookingStatus.WAITING);
         return toBookingDto(bookingRepository.save(toBookingDb(bookingDto, itemFromDb, toUser(userFromDb))));

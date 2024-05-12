@@ -65,14 +65,14 @@ public class ItemMapper {
         BookingDto nextBooking = null;
         if (!bookings.isEmpty()) {
             lastBooking = bookings.stream()
-                    .filter(x -> x.getStatus() != BookingStatus.REJECTED)
-                    .filter(x -> x.getStatus() != BookingStatus.CANCELED)
-                    .filter(x -> x.getStart().isBefore(LocalDateTime.now()))
+                    .filter(booking -> booking.getStatus() != BookingStatus.REJECTED)
+                    .filter(booking -> booking.getStatus() != BookingStatus.CANCELED)
+                    .filter(booking -> booking.getStart().isBefore(LocalDateTime.now()))
                     .max(Comparator.comparing(BookingDto::getStart)).orElse(null);
             nextBooking = bookings.stream()
-                    .filter(x -> x.getStatus() != BookingStatus.REJECTED)
-                    .filter(x -> x.getStatus() != BookingStatus.CANCELED)
-                    .filter(x -> x.getStart().isAfter(LocalDateTime.now()))
+                    .filter(booking -> booking.getStatus() != BookingStatus.REJECTED)
+                    .filter(booking -> booking.getStatus() != BookingStatus.CANCELED)
+                    .filter(booking -> booking.getStart().isAfter(LocalDateTime.now()))
                     .min(Comparator.comparing(BookingDto::getStart)).orElse(null);
         }
         return ItemDto.builder()
