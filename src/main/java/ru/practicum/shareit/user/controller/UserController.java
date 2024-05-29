@@ -22,32 +22,32 @@ public class UserController {
 
     @GetMapping()
     public Collection<UserDto> getAllUsers() {
-        log.debug("Getting all users");
+        log.debug("Получение доступа ко всем пользователям");
         return userService.getAll();
     }
 
     @GetMapping("/{userId}")
     public UserDto getUserById(@PathVariable long userId) {
-        log.debug("Getting user by id: {}", userId);
+        log.debug("Получение доступа к пользователю с id: {}", userId);
         return userService.getById(userId);
     }
 
     @PostMapping()
     public UserDto createUser(@Valid @RequestBody UserDto userDto) {
-        log.debug("Creating user: {}", userDto);
+        log.debug("Создание пользователя: {}", userDto);
         return userService.create(userDto);
     }
 
     @PatchMapping("/{userId}")
     public UserDto updateUser(@PathVariable long userId, @Valid @RequestBody UserDto userDto) {
-        log.debug("Updating user by id: {}", userId);
+        log.debug("Обновление пользователя с id: {}", userId);
         userDto.setId(userId);
         return userService.update(userDto);
     }
 
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable long userId) {
-        log.debug("Deleting user by id : {}", userId);
+        log.debug("Удаление пользователя с id : {}", userId);
         userService.delete(userId);
     }
 }

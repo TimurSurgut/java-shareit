@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user.repository;
+package ru.practicum.shareit.user.repository.inmemmory;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,11 +18,11 @@ public class UserRepositoryInMemoryImpl implements UserRepository {
 
     @Override
     public User create(User user) {
-        log.debug("Creating user: {}", user);
+        log.debug("Создание пользователя: {}", user);
         user.setId(++userId);
         if (!uniqueEmailsSet.add(user.getEmail())) {
             --userId;
-            throw new EmailIsAlreadyRegisteredException("User with this email is already exists!");
+            throw new EmailIsAlreadyRegisteredException("Пользователь с таким адресом электронной почты уже существует!");
         }
         users.put(user.getId(), user);
         return users.get(user.getId());
@@ -30,13 +30,13 @@ public class UserRepositoryInMemoryImpl implements UserRepository {
 
     @Override
     public User getById(long id) {
-        log.debug("Getting User by ID: {}", id);
+        log.debug("Получение доступа к пользователю с  ID: {}", id);
         return users.get(id);
     }
 
     @Override
     public Collection<User> getAll() {
-        log.debug("Getting all users");
+        log.debug("Получение доступа ко всем пользователям");
         return new ArrayList<>(users.values());
     }
 
@@ -46,10 +46,10 @@ public class UserRepositoryInMemoryImpl implements UserRepository {
             if (uniqueEmailsSet.add(user.getEmail())) {
                 uniqueEmailsSet.remove(users.get(user.getId()).getEmail());
             } else {
-                throw new EmailIsAlreadyRegisteredException("User with this email is already exists!");
+                throw new EmailIsAlreadyRegisteredException("Пользователь с таким адресом электронной почты уже существует!");
             }
         }
-        log.debug("Updating user with id: {}, user: {}", user.getId(), user);
+        log.debug("Обновление пользователя с id: {}, user: {}", user.getId(), user);
 
         users.put(user.getId(), user);
         return users.get(user.getId());
@@ -57,7 +57,7 @@ public class UserRepositoryInMemoryImpl implements UserRepository {
 
     @Override
     public void delete(long id) {
-        log.debug("Removing User with id : {}", id);
+        log.debug("Удаление пользователя с id : {}", id);
         uniqueEmailsSet.remove(users.get(id).getEmail());
         users.remove(id);
     }

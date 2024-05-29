@@ -1,11 +1,11 @@
-package ru.practicum.shareit.item.repository;
+package ru.practicum.shareit.item.repository.inmemmory;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.user.repository.inmemmory.UserRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,16 +32,16 @@ public class ItemRepositoryInMemoryImpl implements ItemRepository {
             userItems.add(item);
             return userItems;
         });
-        log.debug("Adding item: {}", item);
+        log.debug("Добавление вещи: {}", item);
         int index = findItemIndexInList(itemId, userId);
         return items.get(userId).get(index);
     }
 
     @Override
     public Item update(Item item, long userId) {
-        log.debug("Updating item : {}", item);
+        log.debug("Обновление вещи : {}", item);
         if (userId != item.getOwner().getId()) {
-            throw new EntityNotFoundException("Owner id is incorrect!");
+            throw new EntityNotFoundException("id пользователя некорректный!");
         }
 
         int index = findItemIndexInList(itemId, userId);
@@ -51,7 +51,7 @@ public class ItemRepositoryInMemoryImpl implements ItemRepository {
 
     @Override
     public Item getItemById(long itemId) {
-        log.debug("Getting item by id: {} ", itemId);
+        log.debug("Получение вещи по id: {} ", itemId);
         Item item = null;
         for (long userId : items.keySet()) {
             item = items.get(userId).stream().filter(x -> x.getId() == itemId).findFirst().orElse(null);
