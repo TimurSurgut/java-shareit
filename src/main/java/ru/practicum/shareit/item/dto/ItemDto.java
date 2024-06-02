@@ -1,8 +1,6 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.booking.dto.BookingLiteDto;
 import ru.practicum.shareit.item.dto.comment.CommentDto;
@@ -11,6 +9,8 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import java.util.List;
 
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemDto {
@@ -24,4 +24,5 @@ public class ItemDto {
       BookingLiteDto lastBooking;
       Long ownerId;
       List<CommentDto> comments;
+      Long requestId;
 }

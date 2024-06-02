@@ -7,6 +7,7 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.comment.CommentDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
@@ -31,6 +32,18 @@ public class ItemMapper {
                 .build();
     }
 
+    public static ItemDto toItemDtoWithRequestId(Item item) {
+        return ItemDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .ownerId(item.ownerId() != null ? item.ownerId() : null)
+                .comments(new ArrayList<>())
+                .requestId(item.getRequest().getId())
+                .build();
+    }
+
     public static Item toItem(ItemDto itemDto) {
         return Item.builder()
                 .id(itemDto.getId() != null ? itemDto.getId() : 0)
@@ -50,6 +63,17 @@ public class ItemMapper {
                 .build();
     }
 
+    public static Item toItemDbWithRequest(ItemDto itemDto, User user, ItemRequest request) {
+        return Item.builder()
+                .id(itemDto.getId() != null ? itemDto.getId() : 0)
+                .name(itemDto.getName())
+                .description(itemDto.getDescription())
+                .available(itemDto.getAvailable())
+                .owner(user)
+                .request(request)
+                .build();
+    }
+
     public static Item toItemUpdate(ItemDto itemDto, Item item) {
         return Item.builder()
                 .id(itemDto.getId())
@@ -65,14 +89,14 @@ public class ItemMapper {
         BookingDto nextBooking = null;
         if (!bookings.isEmpty()) {
             lastBooking = bookings.stream()
-                    .filter(booking -> booking.getStatus() != BookingStatus.REJECTED)
-                    .filter(booking -> booking.getStatus() != BookingStatus.CANCELED)
-                    .filter(booking -> booking.getStart().isBefore(LocalDateTime.now()))
+                    .filter(x -> x.getStatus() != BookingStatus.REJECTED)
+                    .filter(x -> x.getStatus() != BookingStatus.CANCELED)
+                    .filter(x -> x.getStart().isBefore(LocalDateTime.now()))
                     .max(Comparator.comparing(BookingDto::getStart)).orElse(null);
             nextBooking = bookings.stream()
-                    .filter(booking -> booking.getStatus() != BookingStatus.REJECTED)
-                    .filter(booking -> booking.getStatus() != BookingStatus.CANCELED)
-                    .filter(booking -> booking.getStart().isAfter(LocalDateTime.now()))
+                    .filter(x -> x.getStatus() != BookingStatus.REJECTED)
+                    .filter(x -> x.getStatus() != BookingStatus.CANCELED)
+                    .filter(x -> x.getStart().isAfter(LocalDateTime.now()))
                     .min(Comparator.comparing(BookingDto::getStart)).orElse(null);
         }
         return ItemDto.builder()
@@ -87,9 +111,8 @@ public class ItemMapper {
     }
 
 
-    public static ItemDto toItemDtoWithBookingsAndComments(Item item, List<BookingDto> bookings,
-                                                           List<CommentDto> comments) {
-        ItemDto itemDto = null;
+    public static ItemDto toItemDtoWithBookingsAndComments(Item item, List<BookingDto> bookings, List<CommentDto> comments) {
+        ItemDto itemDto;
         if (bookings == null) {
             itemDto = toItemDto(item);
         } else {
