@@ -20,16 +20,16 @@ import java.util.Objects;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Booking {
-     private final String dateFormate = "yyyy-MM-dd'T'HH:mm:ss";
+    static final String formateOfDate = "yyyy-MM-dd'T'HH:mm:ss";
 
      @Id
      @GeneratedValue(strategy = GenerationType.IDENTITY)
      long id;
      @Column(name = "start_date")
-     @JsonFormat(pattern = dateFormate)
+     @JsonFormat(pattern = formateOfDate)
      LocalDateTime start;
      @Column(name = "end_date")
-     @JsonFormat(pattern = dateFormate)
+     @JsonFormat(pattern = formateOfDate)
      LocalDateTime end;
      @ManyToOne
      @JoinColumn(name = "item_id")
