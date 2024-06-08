@@ -2,9 +2,12 @@ package ru.practicum.shareit.booking.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.validator.PageableValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -14,40 +17,47 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class BookingController {
-
     private final BookingService bookingService;
+    private final PageableValidator pageableValidator;
     private final String path = "X-Sharer-User-Id";
 
     @PostMapping
     public BookingDto createBooking(@RequestBody BookingDto bookingDto, HttpServletRequest request) {
-        log.info("Создание бронирования : {}", bookingDto);
-        return bookingService.addBooking(bookingDto, Long.valueOf(request.getHeader(path)));
+        log.info("Creating a booking : {}", bookingDto);
+        return bookingService.addBooking(bookingDto, (long)(request.getIntHeader(path)));
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingDto approveBooking(@PathVariable Long bookingId, @RequestParam String approved,
-                                     HttpServletRequest request) {
-        log.info("Присвоить бронированию статус \"одобрить\": {}, status: {}", bookingId, approved);
-        return bookingService.approveBooking(bookingId, Long.valueOf(request.getHeader(path)), approved);
+    public BookingDto approveBooking(@PathVariable Long bookingId, @RequestParam String approved, HttpServletRequest request) {
+        log.info("Make approve status to booking: {}, status: {}", bookingId, approved);
+        return bookingService.approveBooking(bookingId, (long)(request.getIntHeader(path)), approved);
     }
 
     @GetMapping
     public List<BookingDto> getAllBookingsForUser(@RequestParam(defaultValue = "ALL") String state,
+                                                  @RequestParam(defaultValue = "0") Integer from,
+                                                  @RequestParam(defaultValue = "10") Integer size,
                                                   HttpServletRequest request) {
-        log.info("Получение информации по бронированиям пользователя");
-        return bookingService.getAllBookingsByUserId(Long.valueOf(request.getHeader(path)), state);
+        pageableValidator.checkingPageableParams(from, size);
+        log.info("Getting info by user bookings");
+        Pageable page = PageRequest.of(from / size, size);
+        return bookingService.getAllBookingsByUserId((long) request.getIntHeader(path), state, page);
     }
 
     @GetMapping("/owner")
     public List<BookingDto> getAllBookingsForOwner(@RequestParam(defaultValue = "ALL") String state,
+                                                   @RequestParam(defaultValue = "0") Integer from,
+                                                   @RequestParam(defaultValue = "10") Integer size,
                                                    HttpServletRequest request) {
-        log.info("Получение информации по бронированиям владельцев");
-        return bookingService.getAllBookingsByOwnerId(Long.valueOf(request.getHeader(path)), state);
+        pageableValidator.checkingPageableParams(from, size);
+        log.info("Getting info by owner bookings");
+        Pageable page = PageRequest.of(from / size, size);
+        return bookingService.getAllBookingsByOwnerId((long) request.getIntHeader(path), state, page);
     }
 
     @GetMapping("/{bookingId}")
     public BookingDto getInfoForBooking(@PathVariable Long bookingId, HttpServletRequest request) {
-        log.info("Получение информации для бронирования: {}", bookingId);
-        return bookingService.getBookingInfo(bookingId, Long.valueOf(request.getHeader(path)));
+        log.info("Getting info for booking: {}", bookingId);
+        return bookingService.getBookingInfo(bookingId, (long) request.getIntHeader(path));
     }
 }

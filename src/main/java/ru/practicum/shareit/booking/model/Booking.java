@@ -20,25 +20,26 @@ import java.util.Objects;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Booking {
+    static final String formateOfDate = "yyyy-MM-dd'T'HH:mm:ss";
 
      @Id
      @GeneratedValue(strategy = GenerationType.IDENTITY)
-      long id;
+     long id;
      @Column(name = "start_date")
-     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-      LocalDateTime start;
+     @JsonFormat(pattern = formateOfDate)
+     LocalDateTime start;
      @Column(name = "end_date")
-     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-      LocalDateTime end;
+     @JsonFormat(pattern = formateOfDate)
+     LocalDateTime end;
      @ManyToOne
      @JoinColumn(name = "item_id")
-      Item item;
+     Item item;
      @ManyToOne
      @JoinColumn(name = "booker_id")
-      User booker;
+     User booker;
      @Enumerated(EnumType.STRING)
      @Column(name = "status")
-      BookingStatus status;
+     BookingStatus status;
 
      public Long bookerId() {
           return booker != null ? booker.getId() : null;

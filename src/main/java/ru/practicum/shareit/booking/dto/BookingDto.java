@@ -15,11 +15,11 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookingDto {
 
-      Long id;
-      LocalDateTime start;
-      LocalDateTime end;
-      ItemDto item;
-      UserDto booker;
-      BookingStatus status;
-      Long itemId;
+    Long id;
+    LocalDateTime start;
+    LocalDateTime end;
+    ItemDto item;
+    UserDto booker;
+    BookingStatus status;
+    Long itemId;
 }

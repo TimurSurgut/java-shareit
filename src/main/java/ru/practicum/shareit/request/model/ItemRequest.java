@@ -1,21 +1,24 @@
 package ru.practicum.shareit.request.model;
 
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
 @Setter
 @ToString
+@Builder
 @Entity
 @Table(name = "requests")
+@AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemRequest {
 
@@ -24,8 +27,12 @@ public class ItemRequest {
       long id;
       String description;
      @ManyToOne
-     @JoinColumn(name = "requestor_id")
-      User requestor;
+     @JoinColumn(name = "requester_id")
+      User requester;
+     @Column(name = "creation_date")
+      LocalDateTime creationDate;
+     @OneToMany(mappedBy = "request", cascade = CascadeType.ALL)
+     List<Item> responsesToRequest;
 
      @Override
      public boolean equals(Object o) {
