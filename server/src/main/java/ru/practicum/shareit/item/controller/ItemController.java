@@ -21,33 +21,33 @@ public class ItemController {
 
     private final ItemService itemService;
     private final PageableValidator pageableValidator;
-    private final String path = "X-Sharer-User-Id";
+    private final String header = "X-Sharer-User-Id";
 
     @PostMapping
     public ItemDto createItem(@RequestBody ItemDto itemDto, HttpServletRequest request) {
         log.debug("Creating item element {}", itemDto);
-        return itemService.create(itemDto, request.getIntHeader(path));
+        return itemService.create(itemDto, request.getIntHeader(header));
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@PathVariable long itemId, @RequestBody ItemDto itemDto, HttpServletRequest request) {
         log.debug("Updating item element by id {}", itemId);
         itemDto.setId(itemId);
-        return itemService.update(itemDto, request.getIntHeader(path));
+        return itemService.update(itemDto, request.getIntHeader(header));
     }
 
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@PathVariable long itemId, HttpServletRequest request) {
         log.debug("Getting item by id : {}", itemId);
-        return itemService.getItemById(itemId, request.getIntHeader(path));
+        return itemService.getItemById(itemId, request.getIntHeader(header));
     }
 
     @GetMapping()
     public Collection<ItemDto> getUserItems(@RequestParam(defaultValue = "0") Integer from, @RequestParam(defaultValue = "10") Integer size, HttpServletRequest request) {
         pageableValidator.checkingPageableParams(from, size);
-        log.debug("Getting all items by userId {}", request.getIntHeader(path));
+        log.debug("Getting all items by userId {}", request.getIntHeader(header));
         Pageable page = PageRequest.of(from / size, size);
-        return itemService.getItemsByUserId(request.getIntHeader(path), page);
+        return itemService.getItemsByUserId(request.getIntHeader(header), page);
     }
 
     @GetMapping("/search")
@@ -60,7 +60,7 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public CommentDto createCommentToItem(@PathVariable Long itemId, @RequestBody CommentDto comment, HttpServletRequest request) {
-        log.debug("Creating comment to item by userId {}", request.getIntHeader(path));
-        return itemService.addCommentToItem((long) request.getIntHeader(path), itemId, comment);
+        log.debug("Creating comment to item by userId {}", request.getIntHeader(header));
+        return itemService.addCommentToItem((long) request.getIntHeader(header), itemId, comment);
     }
 }

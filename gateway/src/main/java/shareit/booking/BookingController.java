@@ -22,16 +22,16 @@ public class BookingController {
     private final BookingClient bookingClient;
     private final PageableValidator pageableValidator;
     private final BookingValidator bookingValidator;
-    private final String path = "X-Sharer-User-Id";
+    private final String header = "X-Sharer-User-Id";
 
     @PostMapping
-    public ResponseEntity<Object> createBooking(@RequestBody BookingDto bookingDto, @RequestHeader(path) @Positive long userId) {
+    public ResponseEntity<Object> createBooking(@RequestBody BookingDto bookingDto, @RequestHeader(header) @Positive long userId) {
         bookingValidator.validateBookingData(bookingDto);
         return bookingClient.createBooking(userId, bookingDto);
     }
 
     @PatchMapping("/{bookingId}")
-    public ResponseEntity<Object> approveBooking(@PathVariable @Positive Long bookingId, @RequestParam String approved, @RequestHeader(path) @Positive long userId) {
+    public ResponseEntity<Object> approveBooking(@PathVariable @Positive Long bookingId, @RequestParam String approved, @RequestHeader(header) @Positive long userId) {
         if (!approved.equals("true") && !approved.equals("false")) {
             throw new IncorrectDataException("Approved can be only TRUE or FALSE");
         }
@@ -42,7 +42,7 @@ public class BookingController {
     public ResponseEntity<Object> getAllBookingsForUser(@RequestParam(defaultValue = "ALL") String state,
                                                         @RequestParam(defaultValue = "0") Integer from,
                                                         @RequestParam(defaultValue = "10") Integer size,
-                                                        @RequestHeader(path) @Positive long userId) {
+                                                        @RequestHeader(header) @Positive long userId) {
         pageableValidator.checkingPageableParams(from, size);
         bookingValidator.validateBookingState(state);
         return bookingClient.getAllBookingsForUser(userId, from, size, state);
@@ -52,14 +52,14 @@ public class BookingController {
     public ResponseEntity<Object> getAllBookingsForOwner(@RequestParam(defaultValue = "ALL") String state,
                                                          @RequestParam(defaultValue = "0") Integer from,
                                                          @RequestParam(defaultValue = "10") Integer size,
-                                                         @RequestHeader(path) @Positive long userId) {
+                                                         @RequestHeader(header) @Positive long userId) {
         pageableValidator.checkingPageableParams(from, size);
         bookingValidator.validateBookingState(state);
         return bookingClient.getAllBookingsForOwner(userId, from, size, state);
     }
 
     @GetMapping("/{bookingId}")
-    public ResponseEntity<Object> getInfoForBooking(@PathVariable @Positive Long bookingId, @RequestHeader(path) @Positive long userId) {
+    public ResponseEntity<Object> getInfoForBooking(@PathVariable @Positive Long bookingId, @RequestHeader(header) @Positive long userId) {
         return bookingClient.getInfoForBooking(userId, bookingId);
     }
 }

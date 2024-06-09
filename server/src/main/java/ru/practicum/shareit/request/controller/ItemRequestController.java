@@ -21,19 +21,19 @@ public class ItemRequestController {
 
     private final ItemRequestService itemRequestService;
     private final PageableValidator pageableValidator;
-    private final String path = "X-Sharer-User-Id";
+    private final String header = "X-Sharer-User-Id";
 
 
     @PostMapping
     public ItemRequestDto addNewRequest(@RequestBody ItemRequestDto requestDto, HttpServletRequest request) {
         log.debug("Creating item request element {}", requestDto);
-        return itemRequestService.addNewRequest(requestDto, (long) request.getIntHeader(path));
+        return itemRequestService.addNewRequest(requestDto, (long) request.getIntHeader(header));
     }
 
     @GetMapping
     public Collection<ItemRequestDto> getAllUserItemsWithResponses(HttpServletRequest request) {
         log.debug("Getting collection of users' items requests");
-        return itemRequestService.getAllUserRequestsWithResponses((long) request.getIntHeader(path));
+        return itemRequestService.getAllUserRequestsWithResponses((long) request.getIntHeader(header));
     }
 
     @GetMapping("/all")
@@ -41,12 +41,12 @@ public class ItemRequestController {
         pageableValidator.checkingPageableParams(from, size);
         log.debug("Getting collection of created requests");
         Pageable page = PageRequest.of(from, size, Sort.by("creationDate").descending());
-        return itemRequestService.getAllRequestsToResponse((long) request.getIntHeader(path), page);
+        return itemRequestService.getAllRequestsToResponse((long) request.getIntHeader(header), page);
     }
 
     @GetMapping("/{requestId}")
     public ItemRequestDto getRequestById(@PathVariable Long requestId, HttpServletRequest request) {
         log.debug("Getting request by id: {}", requestId);
-        return itemRequestService.getRequestById((long) request.getIntHeader(path), requestId);
+        return itemRequestService.getRequestById((long) request.getIntHeader(header), requestId);
     }
 }

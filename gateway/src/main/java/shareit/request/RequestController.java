@@ -20,28 +20,28 @@ public class RequestController {
     private final PageableValidator pageableValidator;
     private final ItemRequestValidator itemRequestValidator;
     private final RequestClient requestClient;
-    private final String path = "X-Sharer-User-Id";
+    private final String header = "X-Sharer-User-Id";
 
 
     @PostMapping
-    public ResponseEntity<Object> addNewRequest(@RequestBody ItemRequestDto requestDto, @RequestHeader(path) @Positive long userId) {
+    public ResponseEntity<Object> addNewRequest(@RequestBody ItemRequestDto requestDto, @RequestHeader(header) @Positive long userId) {
         itemRequestValidator.validateItemRequestData(requestDto);
         return requestClient.createRequest(userId, requestDto);
     }
 
     @GetMapping
-    public ResponseEntity<Object> getAllUserItemsWithResponses(@RequestHeader(path) @Positive long userId) {
+    public ResponseEntity<Object> getAllUserItemsWithResponses(@RequestHeader(header) @Positive long userId) {
         return requestClient.getAllUserItemsWithResponses(userId);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Object> getAllCreatedRequests(@RequestParam(defaultValue = "0") Integer from, @RequestParam(defaultValue = "10") Integer size, @RequestHeader(path) @Positive long userId) {
+    public ResponseEntity<Object> getAllCreatedRequests(@RequestParam(defaultValue = "0") Integer from, @RequestParam(defaultValue = "10") Integer size, @RequestHeader(header) @Positive long userId) {
         pageableValidator.checkingPageableParams(from, size);
         return requestClient.getAllCreatedRequests(userId, from, size);
     }
 
     @GetMapping("/{requestId}")
-    public ResponseEntity<Object> getRequestById(@PathVariable @Positive Long requestId, @RequestHeader(path) @Positive long userId) {
+    public ResponseEntity<Object> getRequestById(@PathVariable @Positive Long requestId, @RequestHeader(header) @Positive long userId) {
         return requestClient.getRequestById(userId, requestId);
     }
 }

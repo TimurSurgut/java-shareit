@@ -19,18 +19,18 @@ import java.util.List;
 public class BookingController {
     private final BookingService bookingService;
     private final PageableValidator pageableValidator;
-    private final String path = "X-Sharer-User-Id";
+    private final String header = "X-Sharer-User-Id";
 
     @PostMapping
     public BookingDto createBooking(@RequestBody BookingDto bookingDto, HttpServletRequest request) {
         log.info("Creating a booking : {}", bookingDto);
-        return bookingService.addBooking(bookingDto, (long)(request.getIntHeader(path)));
+        return bookingService.addBooking(bookingDto, (long)(request.getIntHeader(header)));
     }
 
     @PatchMapping("/{bookingId}")
     public BookingDto approveBooking(@PathVariable Long bookingId, @RequestParam String approved, HttpServletRequest request) {
         log.info("Make approve status to booking: {}, status: {}", bookingId, approved);
-        return bookingService.approveBooking(bookingId, (long)(request.getIntHeader(path)), approved);
+        return bookingService.approveBooking(bookingId, (long)(request.getIntHeader(header)), approved);
     }
 
     @GetMapping
@@ -41,7 +41,7 @@ public class BookingController {
         pageableValidator.checkingPageableParams(from, size);
         log.info("Getting info by user bookings");
         Pageable page = PageRequest.of(from / size, size);
-        return bookingService.getAllBookingsByUserId((long) request.getIntHeader(path), state, page);
+        return bookingService.getAllBookingsByUserId((long) request.getIntHeader(header), state, page);
     }
 
     @GetMapping("/owner")
@@ -52,12 +52,12 @@ public class BookingController {
         pageableValidator.checkingPageableParams(from, size);
         log.info("Getting info by owner bookings");
         Pageable page = PageRequest.of(from / size, size);
-        return bookingService.getAllBookingsByOwnerId((long) request.getIntHeader(path), state, page);
+        return bookingService.getAllBookingsByOwnerId((long) request.getIntHeader(header), state, page);
     }
 
     @GetMapping("/{bookingId}")
     public BookingDto getInfoForBooking(@PathVariable Long bookingId, HttpServletRequest request) {
         log.info("Getting info for booking: {}", bookingId);
-        return bookingService.getBookingInfo(bookingId, (long) request.getIntHeader(path));
+        return bookingService.getBookingInfo(bookingId, (long) request.getIntHeader(header));
     }
 }
